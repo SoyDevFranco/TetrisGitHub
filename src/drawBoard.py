@@ -1,33 +1,31 @@
-# drawBoard.py
-from constantes import *
 import pygame
-
-colors = Colors()
+from constantes import *
 
 
 class Grid:
-    def __init__(self):
+    def __init__(self, colors):
         self.col = 10
         self.row = 20
         self.cell_size = 30
-        self.center_x = (WIDTH - (self.cell_size * self.col)) // 3.5
-        self.center_y = (HEIGHT - (self.cell_size * self.row)) // 2
+        self.position_x_grid = (WIDTH - (self.cell_size * self.col)) // 3.5
+        self.position_y_grid = (HEIGHT - (self.cell_size * self.row)) // 2
         self.grid = [[0] * self.col for _ in range(self.row)]
+        self.colors = colors
 
     def draw_board(self, screen):
         """Dibuja el tablero en la pantalla."""
-        for row in range(BOARD_HEIGHT):
-            for col in range(BOARD_WIDTH):
-                x, y = (self.center_x + col * self.cell_size), (
-                    self.center_y + row * self.cell_size
+        for row in range(self.row):
+            for col in range(self.col):
+                x, y = (self.position_x_grid + col * self.cell_size), (
+                    self.position_y_grid + row * self.cell_size
                 )
                 cell_value = self.grid[row][col]
-                color = colors.DARK_GREY if cell_value == 0 else cell_value
+                color = self.colors.DARK_GREY if cell_value == 0 else cell_value
 
                 pygame.draw.rect(screen, color, (x, y, self.cell_size, self.cell_size))
                 pygame.draw.rect(
                     screen,
-                    colors.LIGHT_BLUE,
+                    self.colors.LIGHT_BLUE,
                     (x, y, self.cell_size, self.cell_size),
                     1,
                 )
