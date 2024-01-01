@@ -5,19 +5,19 @@ from drawBoard import *
 from block import *
 from game import *
 
+constants = Constans()
+colors = Colors()
+grid = Grid(colors, constants)
+game = Game(grid, colors)
+
 # Inicialización de Pygame
 pygame.init()
 
 # Inicializar ventana y reloj
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
-colors = Colors()
-grid = Grid(colors)
-game = Game(
-    grid,
-)
 
 while running:
     screen.fill(colors.LIGHT_BLUE)

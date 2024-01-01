@@ -1,7 +1,11 @@
 # Constantes
-WIDTH, HEIGHT = 900, 800
-BOARD_WIDTH, BOARD_HEIGHT = 10, 20
-BLOCK_SIZE = 34
+class Constans:
+    def __init__(self):
+        self.WIDTH = 900
+        self.HEIGHT = 800
+        self.BOARD_WIDTH = 10
+        self.BOARD_HEIGHT = 20
+        self.BLOCK_SIZE = 34
 
 
 # Colores

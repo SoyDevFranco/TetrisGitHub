@@ -1,14 +1,14 @@
+# drawBoard.py
 import pygame
-from constantes import *
 
 
 class Grid:
-    def __init__(self, colors):
+    def __init__(self, colors, constants):
         self.col = 10
         self.row = 20
         self.cell_size = 30
-        self.position_x_grid = (WIDTH - (self.cell_size * self.col)) // 3.5
-        self.position_y_grid = (HEIGHT - (self.cell_size * self.row)) // 2
+        self.position_x_grid = (constants.WIDTH - (self.cell_size * self.col)) // 3.5
+        self.position_y_grid = (constants.HEIGHT - (self.cell_size * self.row)) // 2
         self.grid = [[0] * self.col for _ in range(self.row)]
         self.colors = colors
 
@@ -29,9 +29,3 @@ class Grid:
                     (x, y, self.cell_size, self.cell_size),
                     1,
                 )
-
-                # Imprime las coordenadas de la celda
-                # print(f"Celda en ({row}, {col}): x={x}, y={y}")
-
-
-# Resto del código...

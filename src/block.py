@@ -1,9 +1,11 @@
+# block.py
 import pygame
 from constantes import *
 from drawBoard import *
 
+constans = Constans()
 colors = Colors()
-grid = Grid(colors)
+grid = Grid(colors, constans)
 
 
 class Block:
