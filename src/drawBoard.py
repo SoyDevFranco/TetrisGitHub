@@ -29,3 +29,9 @@ class Grid:
                     (x, y, self.cell_size, self.cell_size),
                     1,
                 )
+
+                # Imprime las coordenadas de la celda
+                # print(f"Celda en ({row}, {col}): x={x}, y={y}")
+
+
+# Resto del código...

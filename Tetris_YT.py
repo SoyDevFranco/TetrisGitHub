@@ -133,8 +133,9 @@ def check_collision(board, current_block, position):
                 block_row = position[1] + row_index
 
                 # Verificar si el bloque está dentro del rango del tablero
-                if 0 <= block_row < len(board) and 0 <= block_col < len(board[0]):
-                    # Verificar colisión con bloques existentes en el tablero
+                if len(board) <= block_row < 2 * len(board) and 0 <= block_col < len(
+                    board[0]
+                ):  # Verificar colisión con bloques existentes en el tablero
                     if board[block_row][block_col] != 0:
                         return True
                 else:
