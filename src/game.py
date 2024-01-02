@@ -1,15 +1,13 @@
 # src\game.py
 import random
 from block import Block
-from drawBoard import Grid
 from constantes import Colors
 
 colors = Colors()
-grid = Grid()
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, grid):
         self.current_block = self.get_random_block()
         self.next_block = self.get_random_block()
         self.grid = grid
@@ -61,7 +59,7 @@ class Game:
 
                     # Asegúrate de que board_row no sea negativo
                     if board_row != 0:
-                        cell_value = grid.grid[board_row][board_col]
+                        cell_value = self.grid.grid[board_row][board_col]
                         if cell_value != 0:
                             return True
         return False  # No hay colisiones
