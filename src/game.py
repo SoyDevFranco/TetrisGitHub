@@ -1,16 +1,17 @@
 # src\game.py
 import random
 from block import Block
-from drawBoard import Grid
+
 from constantes import Colors
 
 colors = Colors()
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, grid):
         self.current_block = self.get_random_block()
         self.next_block = self.get_random_block()
+        self.grid = grid
 
     def get_random_block(self):
         return random.choice(
@@ -50,12 +51,16 @@ class Game:
                     board_row = next_move_y + row_index
 
                     # Verificar si está fuera del rango antes de acceder
-                    if board_col < 0 or board_col >= grid.col or board_row >= grid.row:
+                    if (
+                        board_col < 0
+                        or board_col >= self.grid.col
+                        or board_row >= self.grid.row
+                    ):
                         return True
 
                     # Asegúrate de que board_row no sea negativo
                     if board_row != 0:
-                        cell_value = grid.grid[board_row][board_col]
+                        cell_value = self.grid.grid[board_row][board_col]
                         if cell_value != 0:
                             return True
         return False  # No hay colisiones
@@ -68,4 +73,4 @@ class Game:
                     block_col = self.current_block.position_block_x + col_index
                     block_row = self.current_block.position_block_y + row_index
 
-                    grid.grid[block_row][block_col] = self.current_block.color
+                    self.grid.grid[block_row][block_col] = self.current_block.color

@@ -33,10 +33,3 @@ class Grid:
                     (x, y, self.cell_size, self.cell_size),
                     1,
                 )
-
-        print(f"Celda ({row}, {col}): Valor = {cell_value}, Color = {color}")
-
-        print("Estado del tablero después de dibujar:")
-        for row in self.grid:
-            print(row)
-        print("\n")
