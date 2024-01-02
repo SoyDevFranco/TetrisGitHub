@@ -2,6 +2,7 @@ import pygame
 from constantes import Colors, Constans
 from drawBoard import Grid
 from game import Game
+<<<<<<< HEAD
 from eventHandler import EventHandler
 
 colors = Colors()
@@ -10,6 +11,12 @@ grid = Grid()
 game = Game(grid)
 =======
 grid = Grid(colors)
+=======
+
+constans = Constans()
+colors = Colors()
+grid = Grid(colors, constans)
+>>>>>>> nueva_rama_temporal
 game = Game(grid, colors)
 running = True  # Variable global
 >>>>>>> Stashed changes

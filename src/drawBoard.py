@@ -1,5 +1,6 @@
 # src/drawBoard.py
 import pygame
+<<<<<<< HEAD
 from constantes import Colors, Constans
 
 colors = Colors()
@@ -8,11 +9,20 @@ constants = Constans()
 
 class Grid:
     def __init__(self):
+=======
+
+
+class Grid:
+    def __init__(self, colors, constans):
+>>>>>>> nueva_rama_temporal
         self.col = 10
         self.row = 20
         self.cell_size = 30
-        self.position_x_grid = (constants.WIDTH - (self.cell_size * self.col)) // 3.5
-        self.position_y_grid = (constants.HEIGHT - (self.cell_size * self.row)) // 2
+        self.constans = constans
+        self.position_x_grid = (
+            self.constans.WIDTH - (self.cell_size * self.col)
+        ) // 3.5
+        self.position_y_grid = (self.constans.HEIGHT - (self.cell_size * self.row)) // 2
         self.grid = [[0] * self.col for _ in range(self.row)]
 
     def draw_board(self, screen):
