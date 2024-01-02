@@ -1,6 +1,7 @@
 # src\game.py
 import random
 from block import Block
+
 from constantes import Colors
 
 colors = Colors()
@@ -71,8 +72,5 @@ class Game:
                 if cell != 0:
                     block_col = self.current_block.position_block_x + col_index
                     block_row = self.current_block.position_block_y + row_index
-                    print(f"Solidificando celda en ({block_row}, {block_col})")
-                    print(f"Color de la pieza: {self.current_block.color}")
-                    print("Estado del tablero antes de la asignación:", self.grid)
+
                     self.grid.grid[block_row][block_col] = self.current_block.color
-                    print("Estado del tablero después de la asignación:", self.grid)

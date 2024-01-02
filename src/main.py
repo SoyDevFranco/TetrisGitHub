@@ -45,6 +45,6 @@ while running:
     game.current_block.draw_shape(screen)
 
     pygame.display.update()
-    clock.tick(3)
+    clock.tick(30)
 
 pygame.quit()
