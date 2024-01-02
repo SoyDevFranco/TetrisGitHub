@@ -1,74 +1,28 @@
-# src/game.py
+# src\game.py
 import random
 from block import Block
 
+from constantes import Colors
+
+colors = Colors()
+
 
 class Game:
-    def __init__(self, grid, colors):
-        self.grid = grid
-        self.colors = colors
+    def __init__(self, grid):
         self.current_block = self.get_random_block()
         self.next_block = self.get_random_block()
+        self.grid = grid
 
     def get_random_block(self):
         return random.choice(
             [
-                Block(
-                    "I",
-                    "Long Bar",
-                    [[1, 1, 1, 1]],
-                    self.colors.CYAN,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "O",
-                    "Square",
-                    [[1, 1], [1, 1]],
-                    self.colors.RED,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "T",
-                    "T-Shape",
-                    [[0, 1, 0], [1, 1, 1]],
-                    self.colors.PURPLE,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "L",
-                    "L-Shape",
-                    [[1, 0, 0], [1, 1, 1]],
-                    self.colors.ORANGE,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "S",
-                    "S-Shape",
-                    [[0, 1, 1], [1, 1, 0]],
-                    self.colors.GREEN,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "Z",
-                    "Z-Shape",
-                    [[1, 1, 0], [0, 1, 1]],
-                    self.colors.YELLOW,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "J",
-                    "J-Shape",
-                    [[0, 0, 1], [1, 1, 1]],
-                    self.colors.LAVENDER,
-                    self.grid,
-                    self.colors,
-                ),
+                Block("I", "Long Bar", [[1, 1, 1, 1]], colors.CYAN),
+                Block("O", "Square", [[1, 1], [1, 1]], colors.RED),
+                Block("T", "T-Shape", [[0, 1, 0], [1, 1, 1]], colors.PURPLE),
+                Block("L", "L-Shape", [[1, 0, 0], [1, 1, 1]], colors.ORANGE),
+                Block("S", "S-Shape", [[0, 1, 1], [1, 1, 0]], colors.GREEN),
+                Block("Z", "Z-Shape", [[1, 1, 0], [0, 1, 1]], colors.YELLOW),
+                Block("J", "J-Shape", [[0, 0, 1], [1, 1, 1]], colors.LAVENDER),
             ]
         )
 

@@ -6,8 +6,8 @@ from game import Game
 
 
 colors = Colors()
-grid = Grid(colors)
-game = Game(grid, colors)
+grid = Grid()
+game = Game(grid)
 
 constans = Constans()
 pygame.init()
