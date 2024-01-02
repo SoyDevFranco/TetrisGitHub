@@ -1,15 +1,20 @@
-# game.py
+# src\game.py
 import random
 from block import Block
+from drawBoard import Grid
+from constantes import Colors
+
+colors = Colors()
+grid = Grid()
 
 
 class Game:
-    def __init__(self, grid, colors):
-        self.current_block = self.get_random_block(colors)
-        self.next_block = self.get_random_block(colors)
+    def __init__(self):
+        self.current_block = self.get_random_block()
+        self.next_block = self.get_random_block()
         self.grid = grid
 
-    def get_random_block(self, colors):
+    def get_random_block(self):
         return random.choice(
             [
                 Block("I", "Long Bar", [[1, 1, 1, 1]], colors.CYAN),
@@ -46,11 +51,30 @@ class Game:
                     board_col = next_move_x + col_index
                     board_row = next_move_y + row_index
 
+                    # Verificar si está fuera del rango antes de acceder
                     if (
                         board_col < 0
                         or board_col >= self.grid.col
                         or board_row >= self.grid.row
                     ):
-                        return True  # Hay una colisión con los límites
+                        return True
 
+                    # Asegúrate de que board_row no sea negativo
+                    if board_row != 0:
+                        cell_value = grid.grid[board_row][board_col]
+                        if cell_value != 0:
+                            return True
         return False  # No hay colisiones
+
+    def solidify_block(self):
+        """Solidifica la pieza actual en el tablero."""
+        for row_index, row in enumerate(self.current_block.shape):
+            for col_index, cell in enumerate(row):
+                if cell != 0:
+                    block_col = self.current_block.position_block_x + col_index
+                    block_row = self.current_block.position_block_y + row_index
+                    print(f"Solidificando celda en ({block_row}, {block_col})")
+                    print(f"Color de la pieza: {self.current_block.color}")
+                    print("Estado del tablero antes de la asignación:", self.grid)
+                    self.grid.grid[block_row][block_col] = self.current_block.color
+                    print("Estado del tablero después de la asignación:", self.grid)

@@ -1,11 +1,9 @@
-# block.py
 import pygame
-from constantes import *
-from drawBoard import *
+from constantes import Colors
+from drawBoard import Grid
 
-constans = Constans()
+grid = Grid()
 colors = Colors()
-grid = Grid(colors, constans)
 
 
 class Block:
@@ -17,7 +15,7 @@ class Block:
         self.shape = shape
         self.color = color
 
-    def draw_shape(self, screen, grid, colors):
+    def draw_shape(self, screen):
         for row_index, row in enumerate(self.shape):
             for col_index, cell in enumerate(row):
                 if cell != 0:
