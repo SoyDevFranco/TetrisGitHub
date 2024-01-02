@@ -1,23 +1,21 @@
-# main.py
+# src\main.py
 import pygame
-from constantes import *
-from drawBoard import *
-from block import *
-from game import *
+from constantes import Colors, Constans
+from drawBoard import Grid
+from game import Game
 
-# Inicialización de Pygame
-pygame.init()
-
-# Inicializar ventana y reloj
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-clock = pygame.time.Clock()
-running = True
 
 colors = Colors()
-grid = Grid(colors)
-game = Game(
-    grid,
-)
+grid = Grid()
+game = Game(grid)
+
+constans = Constans()
+pygame.init()
+
+screen = pygame.display.set_mode((constans.WIDTH, constans.HEIGHT))
+clock = pygame.time.Clock()
+running = True
+game_over = False
 
 while running:
     screen.fill(colors.LIGHT_BLUE)
@@ -34,10 +32,17 @@ while running:
                 game.move_right()
             if event.key == pygame.K_DOWN:
                 game.move_down()
+                if game.check_collision(
+                    game.current_block.position_block_x,
+                    game.current_block.position_block_y + 1,
+                ):
+                    game.solidify_block()
+                    game.current_block = game.next_block
+                    game.next_block = game.get_random_block()
 
+    # Dibujar el tablero y la pieza actual
     grid.draw_board(screen)
-    current_block = game.current_block
-    current_block.draw_shape(screen, grid, colors)
+    game.current_block.draw_shape(screen)
 
     pygame.display.update()
     clock.tick(30)
