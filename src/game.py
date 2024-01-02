@@ -7,70 +7,23 @@ class Game:
     def __init__(self, grid, colors):
         self.grid = grid
         self.colors = colors
+        self.blocks = [
+            Block("I", "Long Bar", [[1, 1, 1, 1]], colors.CYAN, grid, colors),
+            Block("O", "Square", [[1, 1], [1, 1]], colors.RED, grid, colors),
+            Block("T", "T-Shape", [[0, 1, 0], [1, 1, 1]], colors.PURPLE, grid, colors),
+            Block("L", "L-Shape", [[1, 0, 0], [1, 1, 1]], colors.ORANGE, grid, colors),
+            Block("S", "S-Shape", [[0, 1, 1], [1, 1, 0]], colors.GREEN, grid, colors),
+            Block("Z", "Z-Shape", [[1, 1, 0], [0, 1, 1]], colors.YELLOW, grid, colors),
+            Block(
+                "J", "J-Shape", [[0, 0, 1], [1, 1, 1]], colors.LAVENDER, grid, colors
+            ),
+        ]
+
         self.current_block = self.get_random_block()
         self.next_block = self.get_random_block()
 
     def get_random_block(self):
-        return random.choice(
-            [
-                Block(
-                    "I",
-                    "Long Bar",
-                    [[1, 1, 1, 1]],
-                    self.colors.CYAN,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "O",
-                    "Square",
-                    [[1, 1], [1, 1]],
-                    self.colors.RED,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "T",
-                    "T-Shape",
-                    [[0, 1, 0], [1, 1, 1]],
-                    self.colors.PURPLE,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "L",
-                    "L-Shape",
-                    [[1, 0, 0], [1, 1, 1]],
-                    self.colors.ORANGE,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "S",
-                    "S-Shape",
-                    [[0, 1, 1], [1, 1, 0]],
-                    self.colors.GREEN,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "Z",
-                    "Z-Shape",
-                    [[1, 1, 0], [0, 1, 1]],
-                    self.colors.YELLOW,
-                    self.grid,
-                    self.colors,
-                ),
-                Block(
-                    "J",
-                    "J-Shape",
-                    [[0, 0, 1], [1, 1, 1]],
-                    self.colors.LAVENDER,
-                    self.grid,
-                    self.colors,
-                ),
-            ]
-        )
+        return random.choice(self.blocks)
 
     def move(self, dx, dy):
         next_move_x = self.current_block.position_block_x + dx

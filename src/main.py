@@ -4,9 +4,9 @@ from constantes import Colors, Constans
 from drawBoard import Grid
 from game import Game
 
-
+constans = Constans()
 colors = Colors()
-grid = Grid(colors)
+grid = Grid(colors, constans)
 game = Game(grid, colors)
 
 constans = Constans()
