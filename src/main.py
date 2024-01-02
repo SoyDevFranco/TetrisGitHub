@@ -5,6 +5,7 @@ from game import Game
 from eventHandler import EventHandler
 
 colors = Colors()
+<<<<<<< HEAD
 <<<<<<< Updated upstream
 grid = Grid()
 game = Game(grid)
@@ -13,6 +14,10 @@ grid = Grid(colors)
 game = Game(grid, colors)
 running = True  # Variable global
 >>>>>>> Stashed changes
+=======
+grid = Grid()
+game = Game(grid)
+>>>>>>> parent of 7187403 (va todo en marcha v3)
 
 event_handler = EventHandler(
     game, running
