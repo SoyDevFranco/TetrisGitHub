@@ -1,16 +1,16 @@
 # src\game.py
 import random
 from block import Block
+from drawBoard import Grid
 from constantes import Colors
 
 colors = Colors()
 
 
 class Game:
-    def __init__(self, grid):
+    def __init__(self):
         self.current_block = self.get_random_block()
         self.next_block = self.get_random_block()
-        self.grid = grid
 
     def get_random_block(self):
         return random.choice(
@@ -50,16 +50,12 @@ class Game:
                     board_row = next_move_y + row_index
 
                     # Verificar si está fuera del rango antes de acceder
-                    if (
-                        board_col < 0
-                        or board_col >= self.grid.col
-                        or board_row >= self.grid.row
-                    ):
+                    if board_col < 0 or board_col >= grid.col or board_row >= grid.row:
                         return True
 
                     # Asegúrate de que board_row no sea negativo
                     if board_row != 0:
-                        cell_value = self.grid.grid[board_row][board_col]
+                        cell_value = grid.grid[board_row][board_col]
                         if cell_value != 0:
                             return True
         return False  # No hay colisiones
@@ -71,8 +67,5 @@ class Game:
                 if cell != 0:
                     block_col = self.current_block.position_block_x + col_index
                     block_row = self.current_block.position_block_y + row_index
-                    print(f"Solidificando celda en ({block_row}, {block_col})")
-                    print(f"Color de la pieza: {self.current_block.color}")
-                    print("Estado del tablero antes de la asignación:", self.grid)
-                    self.grid.grid[block_row][block_col] = self.current_block.color
-                    print("Estado del tablero después de la asignación:", self.grid)
+
+                    grid.grid[block_row][block_col] = self.current_block.color
