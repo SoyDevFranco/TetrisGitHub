@@ -1,30 +1,29 @@
-# src\game.py
+# src/game.py
 import random
 from block import Block
 
-from constantes import Colors
-
-colors = Colors()
-
 
 class Game:
-    def __init__(self, grid):
+    def __init__(self, grid, colors):
+        self.grid = grid
+        self.colors = colors
+        self.blocks = [
+            Block("I", "Long Bar", [[1, 1, 1, 1]], colors.CYAN, grid, colors),
+            Block("O", "Square", [[1, 1], [1, 1]], colors.RED, grid, colors),
+            Block("T", "T-Shape", [[0, 1, 0], [1, 1, 1]], colors.PURPLE, grid, colors),
+            Block("L", "L-Shape", [[1, 0, 0], [1, 1, 1]], colors.ORANGE, grid, colors),
+            Block("S", "S-Shape", [[0, 1, 1], [1, 1, 0]], colors.GREEN, grid, colors),
+            Block("Z", "Z-Shape", [[1, 1, 0], [0, 1, 1]], colors.YELLOW, grid, colors),
+            Block(
+                "J", "J-Shape", [[0, 0, 1], [1, 1, 1]], colors.LAVENDER, grid, colors
+            ),
+        ]
+
         self.current_block = self.get_random_block()
         self.next_block = self.get_random_block()
-        self.grid = grid
 
     def get_random_block(self):
-        return random.choice(
-            [
-                Block("I", "Long Bar", [[1, 1, 1, 1]], colors.CYAN),
-                Block("O", "Square", [[1, 1], [1, 1]], colors.RED),
-                Block("T", "T-Shape", [[0, 1, 0], [1, 1, 1]], colors.PURPLE),
-                Block("L", "L-Shape", [[1, 0, 0], [1, 1, 1]], colors.ORANGE),
-                Block("S", "S-Shape", [[0, 1, 1], [1, 1, 0]], colors.GREEN),
-                Block("Z", "Z-Shape", [[1, 1, 0], [0, 1, 1]], colors.YELLOW),
-                Block("J", "J-Shape", [[0, 0, 1], [1, 1, 1]], colors.LAVENDER),
-            ]
-        )
+        return random.choice(self.blocks)
 
     def move(self, dx, dy):
         next_move_x = self.current_block.position_block_x + dx

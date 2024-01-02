@@ -4,10 +4,10 @@ from constantes import Colors, Constans
 from drawBoard import Grid
 from game import Game
 
-
+constans = Constans()
 colors = Colors()
-grid = Grid()
-game = Game(grid)
+grid = Grid(colors, constans)
+game = Game(grid, colors)
 
 constans = Constans()
 pygame.init()
