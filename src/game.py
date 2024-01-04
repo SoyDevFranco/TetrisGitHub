@@ -1,24 +1,15 @@
 # src/game.py
 import random
-from block import Block
+from drawBoard import Grid
+from constantes import *
+from block_factory import BlockFactory
 
 
 class Game:
-    def __init__(self, grid, colors):
-        self.grid = grid
-        self.colors = colors
-        self.blocks = [
-            Block("I", "Long Bar", [[1, 1, 1, 1]], colors.CYAN, grid, colors),
-            Block("O", "Square", [[1, 1], [1, 1]], colors.RED, grid, colors),
-            Block("T", "T-Shape", [[0, 1, 0], [1, 1, 1]], colors.PURPLE, grid, colors),
-            Block("L", "L-Shape", [[1, 0, 0], [1, 1, 1]], colors.ORANGE, grid, colors),
-            Block("S", "S-Shape", [[0, 1, 1], [1, 1, 0]], colors.GREEN, grid, colors),
-            Block("Z", "Z-Shape", [[1, 1, 0], [0, 1, 1]], colors.YELLOW, grid, colors),
-            Block(
-                "J", "J-Shape", [[0, 0, 1], [1, 1, 1]], colors.LAVENDER, grid, colors
-            ),
-        ]
-
+    def __init__(self):
+        self.grid = Grid()
+        self.colors = Colors()
+        self.blocks = BlockFactory.create_blocks()
         self.current_block = self.get_random_block()
         self.next_block = self.get_random_block()
 
@@ -29,9 +20,12 @@ class Game:
         next_move_x = self.current_block.position_block_x + dx
         next_move_y = self.current_block.position_block_y + dy
 
-        if not self.check_collision(next_move_x, next_move_y):
+        if not self.check_collision_borders(next_move_x, next_move_y):
             self.current_block.position_block_x = next_move_x
             self.current_block.position_block_y = next_move_y
+
+            # Agrega impresión para depurar
+            print(f"Posición de la pieza: ({next_move_x}, {next_move_y})")
 
     def move_left(self):
         self.move(-1, 0)
@@ -41,30 +35,33 @@ class Game:
 
     def move_down(self):
         self.move(0, 1)
+        if self.check_collision_borders(
+            self.current_block.position_block_x,
+            self.current_block.position_block_y,
+        ):
+            self.fix_block()
 
-    def check_collision(self, next_move_x, next_move_y):
+    def check_collision_borders(self, next_move_x, next_move_y):
         for row_index, row in enumerate(self.current_block.shape):
             for col_index, cell in enumerate(row):
                 if cell != 0:
                     board_col = next_move_x + col_index
                     board_row = next_move_y + row_index
 
-                    # Verificar si está fuera del rango antes de acceder
+                    # Verificar si el bloque está dentro del rango del tablero
                     if (
-                        board_col < 0
-                        or board_col >= self.grid.col
-                        or board_row >= self.grid.row
+                        board_row >= self.grid.num_rows  # Modificado a >=
+                        or board_col < 0
+                        or board_col >= self.grid.num_cols
                     ):
+                        # Depuración
+                        print(f"Colisión con bordes en: ({board_col}, {board_row})")
+
                         return True
 
-                    # Asegúrate de que board_row no sea negativo
-                    if board_row != 0:
-                        cell_value = self.grid.grid[board_row][board_col]
-                        if cell_value != 0:
-                            return True
-        return False  # No hay colisiones
+        return False
 
-    def solidify_block(self):
+    def fix_block(self):
         """Solidifica la pieza actual en el tablero."""
         for row_index, row in enumerate(self.current_block.shape):
             for col_index, cell in enumerate(row):
@@ -72,4 +69,10 @@ class Game:
                     block_col = self.current_block.position_block_x + col_index
                     block_row = self.current_block.position_block_y + row_index
 
-                    self.grid.grid[block_row][block_col] = self.current_block.color
+                    # Verifica si la posición está dentro del rango del tablero
+                    if (
+                        0 <= block_row < self.grid.num_rows
+                        and 0 <= block_col < self.grid.num_cols
+                    ):
+                        # Actualiza el color en el tablero
+                        self.grid.grid[block_row][block_col] = self.current_block.color

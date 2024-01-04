@@ -1,5 +1,5 @@
 # Constantes
-class Constans:
+class Constants:
     def __init__(self):
         self.WIDTH = 900
         self.HEIGHT = 800

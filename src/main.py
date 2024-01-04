@@ -1,18 +1,18 @@
 # src\main.py
 import pygame
-from constantes import Colors, Constans
+from constantes import Colors, Constants
 from drawBoard import Grid
 from game import Game
 
-constans = Constans()
+constants = Constants()
 colors = Colors()
-grid = Grid(colors, constans)
-game = Game(grid, colors)
+grid = Grid()
+game = Game()
 
-constans = Constans()
+
 pygame.init()
 
-screen = pygame.display.set_mode((constans.WIDTH, constans.HEIGHT))
+screen = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
 clock = pygame.time.Clock()
 running = True
 game_over = False
@@ -32,19 +32,16 @@ while running:
                 game.move_right()
             if event.key == pygame.K_DOWN:
                 game.move_down()
-                if game.check_collision(
-                    game.current_block.position_block_x,
-                    game.current_block.position_block_y + 1,
-                ):
-                    game.solidify_block()
-                    game.current_block = game.next_block
-                    game.next_block = game.get_random_block()
+
+            if event.key == pygame.K_UP:
+                game.rotate_piece()
 
     # Dibujar el tablero y la pieza actual
     grid.draw_board(screen)
     game.current_block.draw_shape(screen)
 
+    # Actualizar el tablero después de solidificar la pieza
     pygame.display.update()
-    clock.tick(30)
 
-pygame.quit()
+    # Ajustar la velocidad del juego
+    clock.tick(30)
