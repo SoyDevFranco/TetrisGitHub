@@ -7,7 +7,7 @@ from game import Game
 constants = Constants()
 colors = Colors()
 grid = Grid()
-game = Game()
+game = Game(grid)
 
 
 pygame.init()
@@ -32,9 +32,8 @@ while running:
                 game.move_right()
             if event.key == pygame.K_DOWN:
                 game.move_down()
-
             if event.key == pygame.K_UP:
-                game.rotate_piece()
+                game.move_up()
 
     # Dibujar el tablero y la pieza actual
     grid.draw_board(screen)

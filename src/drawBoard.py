@@ -11,7 +11,7 @@ class Grid:
         self.colors = Colors()
         self.grid_position_x = self.calculate_grid_position_x()
         self.grid_position_y = self.calculate_grid_position_y()
-        self.grid = [[0] * self.num_cols for _ in range(self.num_rows)]
+        self.board = [[0] * self.num_cols for _ in range(self.num_rows)]
 
     def calculate_grid_position_x(self):
         return (self.constants.WIDTH - (self.cell_size * self.num_cols)) // 3.5
@@ -27,7 +27,7 @@ class Grid:
                     self.grid_position_x + col * self.cell_size,
                     self.grid_position_y + row * self.cell_size,
                 )
-                cell_value = self.grid[row][col]
+                cell_value = self.board[row][col]
                 color = cell_value if cell_value != 0 else self.colors.DARK_GREY
 
                 pygame.draw.rect(screen, color, (x, y, self.cell_size, self.cell_size))

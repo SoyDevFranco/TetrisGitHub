@@ -35,7 +35,6 @@ class Block:
                         self.grid.grid_position_y
                         + (self.position_block_y + row_index) * self.cell_size
                     )
-
                     pygame.draw.rect(
                         screen,
                         self.color,
