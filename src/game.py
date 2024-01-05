@@ -1,98 +1,122 @@
-# src/game.py
+# src/game.py # 6.5.1
 import random
-from constantes import *
+from constantes import Colors
 from block_factory import BlockFactory
 
 
 class Game:
-    def __init__(self, Grid):
-        self.grid = Grid
-        self.colors = Colors()
+    def __init__(self, grid):
+        """
+        Inicializa el juego con un tablero y bloques aleatorios.
+
+        Parameters:
+        - grid (Grid): La instancia del tablero.
+        """
+        self.grid = grid
         self.blocks = BlockFactory.create_blocks()
         self.current_block = self.get_random_block()
         self.next_block = self.get_random_block()
-        self.block_fixed = False
 
     def get_random_block(self):
-        return random.choice(self.blocks)
+        """
+        Obtiene un bloque aleatorio de la lista de bloques disponibles.
+
+        Returns:
+        - Block: Una instancia de la clase Block.
+        """
+        if not self.blocks:
+            self.blocks = BlockFactory.create_blocks()
+        block = random.choice(self.blocks)
+        self.blocks.remove(block)
+        return block
 
     def spawn_next_block(self):
-        """Genera y asigna la siguiente pieza."""
+        """
+        Genera y asigna el siguiente bloque al juego.
+        """
         self.current_block = self.next_block
         self.next_block = self.get_random_block()
-        self.block_fixed = False  # Reinicia la bandera al generar un nuevo bloque
 
-    def move(self, dx, dy):
-        next_move_x = self.current_block.position_block_x + dx
-        next_move_y = self.current_block.position_block_y + dy
+    def move(self, delta_x, delta_y):
+        """
+        Mueve el bloque actual en la dirección especificada.
 
-        if not self.check_collision_borders(next_move_x) and not self.block_fixed:
+        Parameters:
+        - delta_x (int): Desplazamiento horizontal.
+        - delta_y (int): Desplazamiento vertical.
+        """
+        next_move_x = self.current_block.position_block_x + delta_x
+        next_move_y = self.current_block.position_block_y + delta_y
+        if not self.check_collision(next_move_x, next_move_y):
             self.current_block.position_block_x = next_move_x
-
-        if not self.check_collision_bottom():
             self.current_block.position_block_y = next_move_y
-
-        # Agrega impresión para depurar
-        print(f"Posición de la pieza: ({next_move_x}, {next_move_y})")
+            self.print_debug_position()
 
     def move_left(self):
-        if not self.block_fixed:
-            self.move(-1, 0)
+        """Mueve el bloque actual hacia la izquierda."""
+        self.move(-1, 0)
 
     def move_right(self):
-        if not self.block_fixed:
-            self.move(1, 0)
-
-    def move_up(self):
-        self.rotate()
+        """Mueve el bloque actual hacia la derecha."""
+        self.move(1, 0)
 
     def move_down(self):
+        """
+        Mueve el bloque actual hacia abajo.
+        Si hay colisión en la parte inferior, bloquea el bloque actual y genera uno nuevo.
+        """
         self.move(0, 1)
         if self.check_collision_bottom():
-            self.fix_block()
-            self.reset_block()
-            self.spawn_next_block()  # Agrega esta línea para generar un nuevo bloque
+            self.lock_block()
+            self.spawn_next_block()
 
-    def check_collision_borders(self, next_move_x):
+    def check_collision(self, next_move_x, next_move_y):
+        """
+        Verifica si hay colisión en la posición especificada para el bloque actual.
+
+        Parameters:
+        - next_move_x (int): La nueva posición horizontal.
+        - next_move_y (int): La nueva posición vertical.
+
+        Returns:
+        - bool: True si hay colisión, False de lo contrario.
+        """
         for row_index, row in enumerate(self.current_block.shape):
             for col_index, cell in enumerate(row):
                 if cell != 0:
                     board_col = next_move_x + col_index
-                    if board_col < 0 or board_col >= self.grid.num_cols:
-                        print(f"Colisión con bordes en:{board_col}")
+                    board_row = next_move_y + row_index
+                    if (
+                        board_row >= self.grid.num_rows
+                        or board_col < 0
+                        or board_col >= self.grid.num_cols
+                        or self.grid.grid[board_row][board_col] != 0
+                    ):
                         return True
         return False
 
     def check_collision_bottom(self):
-        for row_index, row in enumerate(self.current_block.shape):
-            for col_index, cell in enumerate(row):
-                if cell != 0:
-                    board_col = self.current_block.position_block_x + col_index
-                    board_row = (
-                        self.current_block.position_block_y
-                        + self.current_block.center_block[1]
-                    ) + row_index
+        """
+        Verifica si hay colisión en la parte inferior del bloque actual.
 
-                    if (
-                        board_row >= self.grid.num_rows
-                        or self.grid.board[board_row][board_col] != 0
-                    ):
-                        print(f"Colisión con bordes en: ({board_col}, {board_row})")
-                        return True
-        return False
+        Returns:
+        - bool: True si hay colisión en la parte inferior, False de lo contrario.
+        """
+        delta_x = self.current_block.position_block_x
+        delta_y = self.current_block.position_block_y + 1
+        return self.check_collision(delta_x, delta_y)
 
-    def fix_block(self):
-        """Solidifica la pieza actual en el tablero."""
+    def lock_block(self):
+        """Solidifica el bloque actual en el tablero."""
         for row_index, row in enumerate(self.current_block.shape):
             for col_index, cell in enumerate(row):
                 if cell != 0:
                     board_col = self.current_block.position_block_x + col_index
                     board_row = self.current_block.position_block_y + row_index
+                    self.grid.grid[board_row][board_col] = self.current_block.id
 
-                    # Corregir: Utiliza el color de la celda de la pieza en el tablero
-                    self.grid.board[board_row][board_col] = self.current_block.color
-        self.block_fixed = True  # Marcar el bloque como fijo después de fijarlo
-
-    def reset_block(self):
-        """Reinicia el estado del bloque."""
-        self.block_fixed = False
+    def print_debug_position(self):
+        """Imprime la posición del bloque actual con fines de depuración."""
+        print(
+            f"Posición de la pieza: ({self.current_block.position_block_x}, {self.current_block.position_block_y})"
+        )

@@ -1,19 +1,23 @@
-# src/block_factory.py
+# src/block_factory.py # 6.5.1
 from block import Block
-from constantes import Colors
 
 
 class BlockFactory:
     @staticmethod
     def create_blocks():
-        colors = Colors()
+        """
+        Crea y devuelve una lista de objetos Block representando diferentes formas de bloques.
+
+        Retorna:
+        - blocks: Lista de bloques con sus respectivas formas.
+        """
         blocks = [
-            Block("I", [[1, 1, 1, 1]], colors.CYAN),
-            Block("O", [[1, 1], [1, 1]], colors.RED),
-            Block("T", [[0, 1, 0], [1, 1, 1]], colors.PURPLE),
-            Block("L", [[1, 0, 0], [1, 1, 1]], colors.ORANGE),
-            Block("S", [[0, 1, 1], [1, 1, 0]], colors.GREEN),
-            Block("Z", [[1, 1, 0], [0, 1, 1]], colors.YELLOW),
-            Block("J", [[0, 0, 1], [1, 1, 1]], colors.LAVENDER),
+            Block(1, "I", [[1, 1, 1, 1]]),
+            Block(2, "O", [[1, 1], [1, 1]]),
+            Block(3, "T", [[0, 1, 0], [1, 1, 1]]),
+            Block(4, "L", [[1, 0, 0], [1, 1, 1]]),
+            Block(5, "S", [[0, 1, 1], [1, 1, 0]]),
+            Block(6, "Z", [[1, 1, 0], [0, 1, 1]]),
+            Block(7, "J", [[0, 0, 1], [1, 1, 1]]),
         ]
         return blocks
