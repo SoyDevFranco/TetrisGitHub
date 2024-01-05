@@ -11,7 +11,7 @@ game = Game(grid)
 
 
 pygame.init()
-
+# Crear la ventana del juego
 screen = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
 clock = pygame.time.Clock()
 running = True
