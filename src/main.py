@@ -41,6 +41,8 @@ while running:
                 game.move_right()
             if event.key == pygame.K_DOWN:
                 game.move_down()
+            if event.key == pygame.K_SPACE:
+                game.move_down_hard()
             if event.key == pygame.K_UP:
                 game.move_up()  # Agrega la lógica para mover hacia arriba si es necesario
 

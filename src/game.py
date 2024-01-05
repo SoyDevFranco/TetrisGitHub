@@ -1,7 +1,10 @@
-# src/game.py # 6.5.1
+# src/game.py
+
 import random
-from constantes import Colors
-from block_factory import BlockFactory
+from constantes import Colors  # Asumiendo que tienes un módulo llamado constantes
+from block_factory import (
+    BlockFactory,
+)  # Asumiendo que tienes un módulo llamado block_factory
 
 
 class Game:
@@ -70,6 +73,21 @@ class Game:
             self.lock_block()
             self.spawn_next_block()
 
+    def move_down_hard(self):
+        """
+        Mueve el bloque actual hacia abajo hasta el fondo.
+        Si hay colisión en la parte inferior, bloquea el bloque actual y genera uno nuevo.
+        """
+        while not self.check_collision_bottom():
+            self.move(0, 1)
+
+        self.lock_block()
+        self.spawn_next_block()
+
+    def move_up(self):
+        """Mueve el bloque actual hacia arriba."""
+        self.rotate()
+
     def check_collision(self, next_move_x, next_move_y):
         """
         Verifica si hay colisión en la posición especificada para el bloque actual.
@@ -114,6 +132,33 @@ class Game:
                     board_col = self.current_block.position_block_x + col_index
                     board_row = self.current_block.position_block_y + row_index
                     self.grid.grid[board_row][board_col] = self.current_block.id
+
+    def rotate(self):
+        """
+        Rota la pieza actual en sentido horario.
+        """
+        # Copia la forma actual de la pieza
+        current_shape = self.current_block.shape
+        # Calcula la nueva forma después de la rotación (sentido horario)
+        new_shape = list(zip(*reversed(current_shape)))
+
+        # Calcula las posiciones después de la rotación
+        next_move_x, next_move_y = (
+            self.current_block.position_block_x,
+            self.current_block.position_block_y,
+        )
+
+        # Ajusta la posición si la nueva forma se sale del borde izquierdo o derecho
+        next_move_x = max(0, min(next_move_x, self.grid.num_cols - len(new_shape[0])))
+
+        # Verifica si la nueva forma se ajusta dentro de los límites del grid
+        if not self.check_collision(next_move_x, next_move_y):
+            # Actualiza la forma y la posición de la pieza actual
+            self.current_block.shape, self.current_block.position_block_x = (
+                new_shape,
+                next_move_x,
+            )
+            self.print_debug_position()
 
     def print_debug_position(self):
         """Imprime la posición del bloque actual con fines de depuración."""
