@@ -45,32 +45,6 @@ class Grid:
         """
         return (self.constants.HEIGHT - (self.cell_size * self.num_rows)) // 2
 
-    def is_inside(self, row, column):
-        """
-        Verifica si la posición (fila, columna) está dentro de los límites del tablero.
-
-        Parámetros:
-        - row: Índice de fila.
-        - column: Índice de columna.
-
-        Retorna:
-        - True si la posición está dentro de los límites, False de lo contrario.
-        """
-        return 0 <= row < self.num_rows and 0 <= column < self.num_cols
-
-    def is_empty(self, row, column):
-        """
-        Verifica si la celda en la posición (fila, columna) está vacía.
-
-        Parámetros:
-        - row: Índice de fila.
-        - column: Índice de columna.
-
-        Retorna:
-        - True si la celda está vacía, False de lo contrario.
-        """
-        return self.grid[row][column] == 0
-
     def draw_board(self, screen):
         """
         Dibuja el tablero en la pantalla utilizando pygame.
@@ -89,3 +63,62 @@ class Grid:
                 )
                 pygame.draw.rect(screen, self.colors[cell_value], cell_rect)
                 pygame.draw.rect(screen, Colors.light_blue, cell_rect, 1)
+
+    def is_row_full(self, row):
+        """
+        Verifica si una fila está completamente llena.
+
+        Parámetros:
+        - row: Índice de la fila a verificar.
+
+        Retorna:
+        - True si la fila está llena, False de lo contrario.
+        """
+        for column in range(self.num_cols):
+            if self.grid[row][column] == 0:
+                return False
+        return True
+
+    def clear_row(self, row):
+        """
+        Borra una fila completa en el tablero.
+
+        Parámetros:
+        - row: Índice de la fila a borrar.
+        """
+        for column in range(self.num_cols):
+            self.grid[row][column] = 0
+
+    def move_row_down(self, row, distance):
+        """
+        Mueve una fila hacia abajo en el tablero.
+
+        Parámetros:
+        - row: Índice de la fila a mover.
+        - distance: Número de posiciones hacia abajo que se moverá la fila.
+        """
+        for column in range(self.num_cols):
+            self.grid[row + distance][column] = self.grid[row][column]
+            self.grid[row][column] = 0
+
+    def clear_full_rows(self):
+        """
+        Borra todas las filas completas en el tablero.
+
+        Retorna:
+        - Número de filas completas borradas.
+        """
+        completed = 0
+        for row in range(self.num_rows - 1, 0, -1):
+            if self.is_row_full(row):
+                self.clear_row(row)
+                completed += 1
+            elif completed > 0:
+                self.move_row_down(row, completed)
+        return completed
+
+    def reset(self):
+        """Reinicia el tablero estableciendo todas las celdas en 0."""
+        for row in range(self.num_rows):
+            for column in range(self.num_cols):
+                self.grid[row][column] = 0

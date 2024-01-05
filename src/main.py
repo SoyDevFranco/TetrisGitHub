@@ -49,6 +49,7 @@ while running:
     # Dibujar el tablero y la pieza actual
     grid.draw_board(screen)
     game.current_block.draw_shape(screen)
+    grid.clear_full_rows()
 
     # Actualizar la ventana después de cada iteración del bucle
     pygame.display.update()
