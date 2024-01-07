@@ -1,7 +1,9 @@
-# src\block.py # 6.5.1
+# src/block.py
+
 import pygame
 from drawBoard import Grid
 from constantes import Colors
+from box import Box
 
 
 class Block:
@@ -42,6 +44,34 @@ class Block:
                         + self.grid.grid_position_x,
                         (self.position_block_y + row_index) * self.cell_size
                         + self.grid.grid_position_y,
+                        self.cell_size,
+                        self.cell_size,
+                    )
+
+                    # Dibuja un rectángulo sólido y otro bordeado alrededor de la celda
+                    pygame.draw.rect(screen, self.colors[self.id], cell_rect)
+                    pygame.draw.rect(screen, Colors.light_blue, cell_rect, 1)
+
+    def draw_shape_preview(self, screen, box):
+        """
+        Dibuja la forma del bloque en la pantalla, centrada en una caja específica.
+
+        Parámetros:
+        - screen: Superficie de la pantalla donde se dibujará el bloque.
+        - box: Instancia de la clase Box que representa la caja específica.
+        """
+        box_center_x, box_center_y = box.get_center()
+
+        for row_index, row in enumerate(self.shape):
+            for col_index, cell in enumerate(row):
+                if cell != 0:
+                    cell_rect = pygame.Rect(
+                        col_index * self.cell_size
+                        + box_center_x
+                        - (len(self.shape[0]) * self.cell_size) // 2,
+                        row_index * self.cell_size
+                        + box_center_y
+                        - (len(self.shape) * self.cell_size) // 2,
                         self.cell_size,
                         self.cell_size,
                     )

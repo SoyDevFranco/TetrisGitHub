@@ -1,7 +1,8 @@
 # src/game.py
-
+import pygame
 import random
-from constantes import Colors  # Asumiendo que tienes un módulo llamado constantes
+
+# Asumiendo que tienes un módulo llamado constantes
 from block_factory import (
     BlockFactory,
 )  # Asumiendo que tienes un módulo llamado block_factory

@@ -34,7 +34,7 @@ class Grid:
         Retorna:
         - Posición X del tablero.
         """
-        return (self.constants.WIDTH - (self.cell_size * self.num_cols)) // 3.5
+        return (self.constants.WIDTH - (self.cell_size * self.num_cols)) // 4
 
     def calculate_grid_position_y(self):
         """

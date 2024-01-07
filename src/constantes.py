@@ -11,8 +11,8 @@ class Constants:
         - BOARD_HEIGHT: Número de filas en el tablero del juego.
         - BLOCK_SIZE: Tamaño de un bloque en píxeles.
         """
-        self.WIDTH = 900
-        self.HEIGHT = 800
+        self.WIDTH = 1200
+        self.HEIGHT = 720
         self.BOARD_WIDTH = 10
         self.BOARD_HEIGHT = 20
         self.BLOCK_SIZE = 34
@@ -30,6 +30,7 @@ class Colors:
     white = (255, 255, 255)
     dark_blue = (44, 44, 127)
     light_blue = (59, 85, 162)
+    custom_color = (26, 62, 105)
 
     @classmethod
     def get_cell_colors(cls):
