@@ -18,20 +18,34 @@ class Game:
         """
         self.grid = grid
         self.blocks = BlockFactory.create_blocks()
-        self.current_block = self.get_random_block()
+        self.current_block = self.get_random_block(first_time=True)
         self.next_block = self.get_random_block()
+        self.score = 0
 
-    def get_random_block(self):
+    def get_random_block(self, first_time=False):
         """
         Obtiene un bloque aleatorio de la lista de bloques disponibles.
+
+        Parameters:
+        - first_time (bool): True si es la primera vez que se llama a la función, False de lo contrario.
 
         Returns:
         - Block: Una instancia de la clase Block.
         """
         if not self.blocks:
             self.blocks = BlockFactory.create_blocks()
-        block = random.choice(self.blocks)
-        self.blocks.remove(block)
+
+        if first_time:
+            # Excluir bloques Z y S en la primera llamada
+            filtered_blocks = [
+                block for block in self.blocks if block.name not in ["Z", "S"]
+            ]
+            block = random.choice(filtered_blocks)
+            self.blocks.remove(block)
+        else:
+            block = random.choice(self.blocks)
+            self.blocks.remove(block)
+
         return block
 
     def spawn_next_block(self):
@@ -54,7 +68,6 @@ class Game:
         if not self.check_collision(next_move_x, next_move_y):
             self.current_block.position_block_x = next_move_x
             self.current_block.position_block_y = next_move_y
-            self.print_debug_position()
 
     def move_left(self):
         """Mueve el bloque actual hacia la izquierda."""
@@ -159,10 +172,19 @@ class Game:
                 new_shape,
                 next_move_x,
             )
-            self.print_debug_position()
 
-    def print_debug_position(self):
-        """Imprime la posición del bloque actual con fines de depuración."""
-        print(
-            f"Posición de la pieza: ({self.current_block.position_block_x}, {self.current_block.position_block_y})"
-        )
+    # En la clase Game
+    def calculate_score(self):
+        """
+        Calcula la puntuación del juego basada en las filas completadas.
+
+        Returns:
+        - int: La puntuación actual del juego.
+        """
+        completed_rows = self.grid.clear_full_rows()
+        if completed_rows > 0:
+            self.score += (
+                completed_rows * 100
+            )  # Ajusta la puntuación según tu preferencia
+            return self.score
+        return 0

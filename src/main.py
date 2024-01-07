@@ -15,7 +15,7 @@ game = Game(grid)
 
 # Puntos iniciales
 puntos = 0
-textHandler = TextHandler()
+text_handler = TextHandler()
 
 # Configuración de la ventana del juego
 screen = pygame.display.set_mode((constants.WIDTH, constants.HEIGHT))
@@ -57,9 +57,11 @@ while running:
                 game.move_up()
 
     # Dibujar la caja específica por nombre
+    puntos += game.calculate_score()
     box_score = BoxFactory.get_box_by_name("box_score")
     if box_score:
         box_score.draw(screen)
+        # Mostrar el puntaje en la pantalla
         text_surface = TextHandler.create_text(
             screen,
             "Puntos: {}".format(puntos),
@@ -72,6 +74,7 @@ while running:
     box_next_block = BoxFactory.get_box_by_name("box_next_block")
     if box_next_block:
         box_next_block.draw(screen)
+        # Mostrar el próximo bloque en la pantalla
         text_surface = TextHandler.create_text(
             screen, "Próximo Bloque", 30, colors.white, box_next_block, margin=-50
         )
