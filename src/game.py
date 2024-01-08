@@ -21,6 +21,7 @@ class Game:
         self.music = self.audio_manager.play_music()
         self.score = 0
         self.paused = False
+        self.falling_speed = 500
 
     def get_random_block(self, first_time=False):
         """
@@ -186,11 +187,32 @@ class Game:
                 next_move_x,
             )
 
+    def update_falling_speed(self):
+        """
+        Actualiza la velocidad de caída en función del puntaje actual.
+        La velocidad aumenta en etapas predefinidas basadas en el puntaje acumulado.
+        """
+        # Define las etapas de aumento de velocidad y las velocidades correspondientes
+        speed_stages = [
+            (0, 500),
+            (500, 450),
+            (1000, 400),
+            (1500, 350),
+            (2000, 300),
+            (2500, 250),
+            (3000, 200),
+            (4500, 150),
+        ]
+
+        for score_limit, new_speed in speed_stages:
+            if self.score >= score_limit and self.falling_speed > new_speed:
+                self.falling_speed = new_speed
+
     def drop_piece(self, falling_timer):
         """Hace caer la pieza actual hacia abajo."""
-        time_interval = 500  # Establece el intervalo de tiempo en milisegundos (ajústalo según tus preferencias)
-
         if not self.paused:
+            # Configuración del intervalo de tiempo para la caída de la pieza
+            time_interval = self.falling_speed
             if pygame.time.get_ticks() - falling_timer >= time_interval:
                 if not self.check_collision_bottom():
                     self.move_down()

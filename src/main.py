@@ -59,6 +59,9 @@ while running:
                 running = False
             if event.key == pygame.K_r:
                 game.reset()
+    game.update_falling_speed()  # Agrega esta línea para actualizar la velocidad de caída
+
+    falling_timer = game.drop_piece(falling_timer)
 
     # Dibujar el cuadro del puntaje
     box_score = BoxFactory.get_box_by_name("box_score")
@@ -90,7 +93,6 @@ while running:
         )
 
     grid.draw_board(screen)
-    falling_timer = game.drop_piece(falling_timer)
     game.current_block.draw_shape(screen)
     game.next_block.draw_shape_preview(screen, box_next_block)
 
