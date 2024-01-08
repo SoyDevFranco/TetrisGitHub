@@ -1,11 +1,10 @@
 # src/game.py
 import pygame
 import random
+from sounds import AudioManager
 
 # Asumiendo que tienes un módulo llamado constantes
-from block_factory import (
-    BlockFactory,
-)  # Asumiendo que tienes un módulo llamado block_factory
+from block_factory import BlockFactory
 
 
 class Game:
@@ -17,6 +16,7 @@ class Game:
         - grid (Grid): La instancia del tablero.
         """
         self.grid = grid
+        self.audio_manager = AudioManager()
         self.blocks = BlockFactory.create_blocks()
         self.current_block = self.get_random_block(first_time=True)
         self.next_block = self.get_random_block()
@@ -146,6 +146,7 @@ class Game:
                     board_col = self.current_block.position_block_x + col_index
                     board_row = self.current_block.position_block_y + row_index
                     self.grid.grid[board_row][board_col] = self.current_block.id
+                    self.audio_manager.play_block_lock_sound()
 
     def rotate(self):
         """
@@ -186,5 +187,69 @@ class Game:
             self.score += (
                 completed_rows * 100
             )  # Ajusta la puntuación según tu preferencia
+            self.audio_manager.play_clear_row_sound()
             return self.score
         return 0
+
+    # En la clase Game
+    def check_loss_condition(self):
+        """
+        Verifica si el juego ha alcanzado una condición de derrota.
+
+        Returns:
+        - bool: True si se ha perdido, False de lo contrario.
+        """
+        # Verificar si hay alguna celda en la primera fila ocupada
+        if any(cell != 0 for cell in self.grid.grid[0]):
+            return True
+        return False
+
+    # En la clase Game
+    def reset(self):
+        """
+        Reinicia el juego a su estado inicial.
+        """
+        self.grid.reset()  # Llama al método reset de la instancia de Grid
+        self.blocks = BlockFactory.create_blocks()
+        self.current_block = self.get_random_block(first_time=True)
+        self.next_block = self.get_random_block()
+        self.score = 0
+
+    def wait_for_restart(self, game):
+        """
+        Espera a que el jugador presione 'r' para reiniciar el juego.
+
+        Parameters:
+        - game (Game): La instancia del juego.
+        """
+        self.audio_manager.stop_sound()
+        self.audio_manager.play_game_over_sound()
+
+        waiting_for_restart = True
+
+        while waiting_for_restart:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT or (
+                    event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE
+                ):
+                    pygame.quit()
+                    quit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                    waiting_for_restart = False
+
+        self.audio_manager.stop_sound()
+        self.audio_manager.play_music()
+        game.reset()
+
+    # En la clase Game
+    def drop_piece(self, falling_timer):
+        """Hace caer la pieza actual hacia abajo."""
+        time_interval = 500  # Establece el intervalo de tiempo en milisegundos (ajústalo según tus preferencias)
+
+        if pygame.time.get_ticks() - falling_timer >= time_interval:
+            if not self.check_collision_bottom():
+                self.move_down()
+
+            falling_timer = pygame.time.get_ticks()
+
+        return falling_timer
