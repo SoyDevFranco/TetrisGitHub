@@ -1,4 +1,4 @@
-# src/block_factory.py # 6.5.1
+# src/block_factory.py
 from block import Block
 
 

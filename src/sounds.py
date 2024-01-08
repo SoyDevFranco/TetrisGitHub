@@ -1,4 +1,4 @@
-# sounds.py 
+# sounds.py
 import pygame
 
 
@@ -11,7 +11,7 @@ class AudioManager:
 
         # Música del juego
         self.music = pygame.mixer.Sound("sounds/Tetris_theme.mp3")
-        self.music.set_volume(0.1)
+        self.music.set_volume(0.05)
 
         # Sonidos adicionales con ajustes de volumen
         self.clear_row_sound = pygame.mixer.Sound("sounds/clear_row_sound.mp3")

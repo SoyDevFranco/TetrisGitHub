@@ -2,8 +2,6 @@
 import pygame
 import random
 from sounds import AudioManager
-
-# Asumiendo que tienes un módulo llamado constantes
 from block_factory import BlockFactory
 
 
@@ -16,11 +14,13 @@ class Game:
         - grid (Grid): La instancia del tablero.
         """
         self.grid = grid
-        self.audio_manager = AudioManager()
         self.blocks = BlockFactory.create_blocks()
         self.current_block = self.get_random_block(first_time=True)
         self.next_block = self.get_random_block()
+        self.audio_manager = AudioManager()
+        self.music = self.audio_manager.play_music()
         self.score = 0
+        self.paused = False
 
     def get_random_block(self, first_time=False):
         """
@@ -35,16 +35,16 @@ class Game:
         if not self.blocks:
             self.blocks = BlockFactory.create_blocks()
 
+        # Seleccionar bloques específicos en la primera llamada
+        available_blocks = self.blocks
         if first_time:
-            # Excluir bloques Z y S en la primera llamada
-            filtered_blocks = [
+            available_blocks = [
                 block for block in self.blocks if block.name not in ["Z", "S"]
             ]
-            block = random.choice(filtered_blocks)
-            self.blocks.remove(block)
-        else:
-            block = random.choice(self.blocks)
-            self.blocks.remove(block)
+
+        # Seleccionar y remover un bloque aleatorio
+        block = random.choice(available_blocks)
+        self.blocks.remove(block)
 
         return block
 
@@ -138,6 +138,14 @@ class Game:
         delta_y = self.current_block.position_block_y + 1
         return self.check_collision(delta_x, delta_y)
 
+    def update_score(self, lines_cleared):
+        if lines_cleared == 1:
+            self.score += 100
+        elif lines_cleared == 2:
+            self.score += 300
+        elif lines_cleared == 3:
+            self.score += 500
+
     def lock_block(self):
         """Solidifica el bloque actual en el tablero."""
         for row_index, row in enumerate(self.current_block.shape):
@@ -147,6 +155,10 @@ class Game:
                     board_row = self.current_block.position_block_y + row_index
                     self.grid.grid[board_row][board_col] = self.current_block.id
                     self.audio_manager.play_block_lock_sound()
+                    rows_cleared = self.grid.clear_full_rows()
+                    if rows_cleared > 0:
+                        self.update_score(rows_cleared)
+                        self.audio_manager.play_clear_row_sound()
 
     def rotate(self):
         """
@@ -174,24 +186,27 @@ class Game:
                 next_move_x,
             )
 
-    # En la clase Game
-    def calculate_score(self):
-        """
-        Calcula la puntuación del juego basada en las filas completadas.
+    def drop_piece(self, falling_timer):
+        """Hace caer la pieza actual hacia abajo."""
+        time_interval = 500  # Establece el intervalo de tiempo en milisegundos (ajústalo según tus preferencias)
 
-        Returns:
-        - int: La puntuación actual del juego.
-        """
-        completed_rows = self.grid.clear_full_rows()
-        if completed_rows > 0:
-            self.score += (
-                completed_rows * 100
-            )  # Ajusta la puntuación según tu preferencia
-            self.audio_manager.play_clear_row_sound()
-            return self.score
-        return 0
+        if not self.paused:
+            if pygame.time.get_ticks() - falling_timer >= time_interval:
+                if not self.check_collision_bottom():
+                    self.move_down()
 
-    # En la clase Game
+                falling_timer = pygame.time.get_ticks()
+
+        return falling_timer
+
+    def toggle_pause(self):
+        """Pausa/despausa el juego."""
+        self.paused = not self.paused
+        if self.paused:
+            self.audio_manager.stop_sound()  # Detiene la música al pausar
+        else:
+            self.audio_manager.play_music()  # Reproduce la música al despausar
+
     def check_loss_condition(self):
         """
         Verifica si el juego ha alcanzado una condición de derrota.
@@ -204,7 +219,6 @@ class Game:
             return True
         return False
 
-    # En la clase Game
     def reset(self):
         """
         Reinicia el juego a su estado inicial.
@@ -240,16 +254,3 @@ class Game:
         self.audio_manager.stop_sound()
         self.audio_manager.play_music()
         game.reset()
-
-    # En la clase Game
-    def drop_piece(self, falling_timer):
-        """Hace caer la pieza actual hacia abajo."""
-        time_interval = 500  # Establece el intervalo de tiempo en milisegundos (ajústalo según tus preferencias)
-
-        if pygame.time.get_ticks() - falling_timer >= time_interval:
-            if not self.check_collision_bottom():
-                self.move_down()
-
-            falling_timer = pygame.time.get_ticks()
-
-        return falling_timer
