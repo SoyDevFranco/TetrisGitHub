@@ -10,15 +10,17 @@ import os
 from sounds import AudioManager
 
 # Configuraciones y objetos del juego
-constants = Constants()
-colors = Colors()
-grid = Grid()
-audio_manager = AudioManager()
-game = Game(grid)
-text_handler = TextHandler()
+constants = (
+    Constants()
+)  # Instancia de la clase Constants para almacenar constantes del juego
+colors = Colors()  # Instancia de la clase Colors para manejar colores
+grid = Grid()  # Instancia del tablero de juego (clase Grid)
+audio_manager = AudioManager()  # Instancia del manejador de sonidos
+game = Game(grid)  # Instancia del juego (clase Game)
+text_handler = TextHandler()  # Instancia del manejador de texto
 background = Background(
     constants.WIDTH, constants.HEIGHT, os.path.join("img", "background.png")
-)
+)  # Instancia del fondo del juego
 
 # Configuración de la ventana del juego
 pygame.init()
@@ -45,23 +47,24 @@ while running:
             if event.key == pygame.K_p:
                 game.toggle_pause()
             if not game.paused:  # Solo procesar eventos si el juego no está pausado
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_a:
                     game.move_left()
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_d:
                     game.move_right()
-                elif event.key == pygame.K_DOWN:
+                elif event.key == pygame.K_s:
                     game.move_down()
                 elif event.key == pygame.K_SPACE:
                     game.move_down_hard()
-                elif event.key == pygame.K_UP:
+                elif event.key == pygame.K_w:
                     game.move_up()
             if event.key == pygame.K_ESCAPE:
                 running = False
             if event.key == pygame.K_r:
                 game.reset()
-    game.update_falling_speed()  # Agrega esta línea para actualizar la velocidad de caída
 
-    falling_timer = game.drop_piece(falling_timer)
+    game.update_falling_speed()  # Actualiza la velocidad de caída del bloque en función del puntaje
+
+    falling_timer = game.drop_piece(falling_timer)  # Hace caer la pieza actual
 
     # Dibujar el cuadro del puntaje
     box_score = BoxFactory.get_box_by_name("box_score")
@@ -70,12 +73,22 @@ while running:
         # Mostrar el puntaje en la pantalla
         text_surface = TextHandler.create_text_in_box(
             screen,
-            "Puntos: {}".format(game.score),
+            "Puntos: {}".format(game.score.score),
             30,
             colors.white,
             box_score,
             margin=0,
         )
+
+    # Dibujar el récord en la esquina superior derecha
+    high_score_text_surface = TextHandler.create_text_centered(
+        screen,
+        "Récord: {}".format(game.score.get_high_score()),
+        30,
+        colors.white,
+        1000,
+        32.5,
+    )
 
     # Dibujar el cuadro del próximo bloque
     box_next_block = BoxFactory.get_box_by_name("box_next_block")
@@ -89,18 +102,25 @@ while running:
     # Mostrar mensaje de pausa si el juego está pausado
     if game.paused:
         pause_text_rect = TextHandler.create_text_centered(
-            screen, "PAUSA", 60, colors.white
+            screen, "PAUSA", 60, colors.white, 370, 32.5
         )
 
-    grid.draw_board(screen)
-    game.current_block.draw_shape(screen)
-    game.next_block.draw_shape_preview(screen, box_next_block)
+    grid.draw_board(screen)  # Dibujar el tablero de juego
+    game.current_block.draw_shape(screen)  # Dibujar la forma del bloque actual
+    game.next_block.draw_shape_preview(
+        screen, box_next_block
+    )  # Dibujar la vista previa del próximo bloque
 
     # Verificar si se ha perdido el juego
     if game.check_loss_condition():
         # Mostrar mensaje de pérdida
         loss_text_rect = TextHandler.create_text_centered(
-            screen, "¡Has perdido! Presiona 'r' para reiniciar", 40, colors.white
+            screen,
+            "¡Has perdido! Presiona 'r' para reiniciar",
+            40,
+            colors.white,
+            370,
+            32.5,
         )
 
         # Actualizar la ventana después de mostrar el mensaje de pérdida

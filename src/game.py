@@ -3,6 +3,7 @@ import pygame
 import random
 from sounds import AudioManager
 from block_factory import BlockFactory
+from score import Score
 
 
 class Game:
@@ -13,15 +14,19 @@ class Game:
         Parameters:
         - grid (Grid): La instancia del tablero.
         """
-        self.grid = grid
-        self.blocks = BlockFactory.create_blocks()
-        self.current_block = self.get_random_block(first_time=True)
-        self.next_block = self.get_random_block()
-        self.audio_manager = AudioManager()
-        self.music = self.audio_manager.play_music()
-        self.score = 0
-        self.paused = False
-        self.falling_speed = 500
+        self.score = Score()  # Instancia de la clase Score para gestionar el puntaje
+        self.grid = grid  # Instancia del tablero (clase Grid)
+        self.blocks = BlockFactory.create_blocks()  # Lista de bloques disponibles
+        self.current_block = self.get_random_block(
+            first_time=True
+        )  # Bloque actual en juego
+        self.next_block = self.get_random_block()  # Siguiente bloque a aparecer
+        self.audio_manager = AudioManager()  # Manejador de sonidos
+        self.music = (
+            self.audio_manager.play_music()
+        )  # Reproduce la música del juego al inicio
+        self.paused = False  # Estado de pausa del juego
+        self.falling_speed = 500  # Velocidad inicial de caída de las piezas
 
     def get_random_block(self, first_time=False):
         """
@@ -139,14 +144,6 @@ class Game:
         delta_y = self.current_block.position_block_y + 1
         return self.check_collision(delta_x, delta_y)
 
-    def update_score(self, lines_cleared):
-        if lines_cleared == 1:
-            self.score += 100
-        elif lines_cleared == 2:
-            self.score += 300
-        elif lines_cleared == 3:
-            self.score += 500
-
     def lock_block(self):
         """Solidifica el bloque actual en el tablero."""
         for row_index, row in enumerate(self.current_block.shape):
@@ -158,7 +155,7 @@ class Game:
                     self.audio_manager.play_block_lock_sound()
                     rows_cleared = self.grid.clear_full_rows()
                     if rows_cleared > 0:
-                        self.update_score(rows_cleared)
+                        self.score.update_score(rows_cleared)
                         self.audio_manager.play_clear_row_sound()
 
     def rotate(self):
@@ -205,7 +202,7 @@ class Game:
         ]
 
         for score_limit, new_speed in speed_stages:
-            if self.score >= score_limit and self.falling_speed > new_speed:
+            if self.score.score >= score_limit and self.falling_speed > new_speed:
                 self.falling_speed = new_speed
 
     def drop_piece(self, falling_timer):
@@ -216,8 +213,13 @@ class Game:
             if pygame.time.get_ticks() - falling_timer >= time_interval:
                 if not self.check_collision_bottom():
                     self.move_down()
+                if self.check_collision_bottom():
+                    self.lock_block()
 
                 falling_timer = pygame.time.get_ticks()
+
+                # Actualiza la velocidad de caída si es necesario
+                self.update_falling_speed()
 
         return falling_timer
 
@@ -249,7 +251,7 @@ class Game:
         self.blocks = BlockFactory.create_blocks()
         self.current_block = self.get_random_block(first_time=True)
         self.next_block = self.get_random_block()
-        self.score = 0
+        self.score = Score()  # Cambia la asignación a una instancia de Score
 
     def wait_for_restart(self, game):
         """

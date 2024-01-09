@@ -25,7 +25,9 @@ class TextHandler:
         return text_rect
 
     @staticmethod
-    def create_text_centered(surface, content, font_size, color):
+    def create_text_centered(
+        surface, content, font_size, color, position_x, position_y
+    ):
         """
         Crea un objeto de texto en una superficie dada, centrado en la pantalla.
 
@@ -35,9 +37,9 @@ class TextHandler:
         :param color: Color del texto.
         :return: Rectángulo asociado al texto en el centro de la superficie.
         """
-        screen_center_x, screen_center_y = 370, 32.5
+
         font = pygame.font.Font(None, font_size)
         text_surface = font.render(content, True, color)
-        text_rect = text_surface.get_rect(center=(screen_center_x, screen_center_y))
+        text_rect = text_surface.get_rect(center=(position_x, position_y))
         surface.blit(text_surface, text_rect)
         return text_rect
